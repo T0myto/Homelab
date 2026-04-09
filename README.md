@@ -75,11 +75,11 @@ Mini PC — Proxmox
 
 ## 🎓 Certifications
 
-- ✅ Microsoft Azure Fundamentals (AZ-900)
+- ✅ Cisco (Networking/Troubleshooting)
+- ✅ Microsoft Azure
 - ✅ Docker
-- ✅ Cisco (Networking)
-- 🔄 CCNA — en cours
-- 🔜 AZ-104 Azure Administrator
+- 🔄 Python — en cours
+🔜 Terraform
 
 ---
 
