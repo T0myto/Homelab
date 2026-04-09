@@ -1,16 +1,3 @@
-Bonne base, la structure est propre ! Mais pour un recruteur, il manque plusieurs éléments clés. Voici ce qui ne va pas et la version améliorée :
-
-❌ Ce qui manque actuellement
-
-Pas de schéma réseau — un recruteur veut visualiser ton infra
-Pas de badges — ça donne un aspect pro immédiatement
-Pas de détails techniques — juste des listes, pas de contexte
-Pas de statut — qu'est ce qui est fait vs en cours ?
-Pas de liens vers tes projets/certifs
-Terraform/Ansible/Azure IoT Hub sont listés mais pas encore faits — attention à ne pas mentir
-
-
-✅ Version améliorée — colle ça dans ton README
 markdown<div align="center">
 
 # 🏠 Homelab — Tom MAUDET
