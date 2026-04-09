@@ -1,5 +1,8 @@
 <div align="center">
-
+    
+> Étudiant BTS SIO SISR | Passionné réseau, cloud et électronique embarquée
+> Construit et maintiens une infrastructure homelab depuis 2 ans
+> 
 # 🏠 Homelab — Tom MAUDET
 
 ![Proxmox](https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
@@ -51,7 +54,7 @@ Mini PC — Proxmox
 
 | Service | Stack | Accès |
 |---|---|---|
-| Domotique | Home Assistant | service.mondomaine.fr |
+| Domotique | Home Assistant | portfolio.tom-maudet.fr |
 | Automatisation | Node-RED | Flows MQTT, webhooks |
 | Reverse proxy | Cloudflare Tunnel | SSL automatique |
 
