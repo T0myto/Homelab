@@ -54,7 +54,7 @@ Mini PC — Proxmox
 
 | Service | Stack | Accès |
 |---|---|---|
-| Domotique | Home Assistant | portfolio.tom-maudet.fr |
+| Domotique | Home Assistant | homeassit.tom-maudet.fr |
 | Automatisation | Node-RED | Flows MQTT, webhooks |
 | Reverse proxy | Cloudflare Tunnel | SSL automatique |
 
