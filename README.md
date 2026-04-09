@@ -79,7 +79,7 @@ Mini PC — Proxmox
 - ✅ Microsoft Azure
 - ✅ Docker
 - 🔄 Python — en cours
-🔜 Terraform
+- 🔜 Terraform
 
 ---
 
