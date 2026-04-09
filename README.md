@@ -1,21 +1,110 @@
+Bonne base, la structure est propre ! Mais pour un recruteur, il manque plusieurs éléments clés. Voici ce qui ne va pas et la version améliorée :
+
+❌ Ce qui manque actuellement
+
+Pas de schéma réseau — un recruteur veut visualiser ton infra
+Pas de badges — ça donne un aspect pro immédiatement
+Pas de détails techniques — juste des listes, pas de contexte
+Pas de statut — qu'est ce qui est fait vs en cours ?
+Pas de liens vers tes projets/certifs
+Terraform/Ansible/Azure IoT Hub sont listés mais pas encore faits — attention à ne pas mentir
+
+
+✅ Version améliorée — colle ça dans ton README
+markdown<div align="center">
+
 # 🏠 Homelab — Tom MAUDET
 
-## Infrastructure
-- Proxmox sur Mini PC
-- pfSense (VLANs)
-- Cloudflare Zero Trust
+![Proxmox](https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Home Assistant](https://img.shields.io/badge/Home%20Assistant-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 
-## Services
-- Home Assistant + Node-RED
-- Pi-hole (DNS)
-- Grafana (monitoring)
+> Homelab personnel évolutif combinant virtualisation, réseau, IoT et automatisation cloud.
 
-## IoT & Embarqué
-- Volets connectés ESP32 + MQTT
-- Capteurs environnementaux ESP32
-- Intégration Azure IoT Hub
+</div>
 
-## Automatisation
-- Terraform (infra Azure)
-- Ansible (config VMs)
-- GitHub Actions (CI/CD)
+---
+
+## 🗺️ Architecture réseau
+
+```
+Internet
+    │
+Cloudflare Zero Trust (tunnel chiffré)
+    │
+Mini PC — Proxmox
+    ├── VM pfSense        → Routeur/Firewall — VLANs
+    ├── LXC Pi-hole       → DNS filtering
+    ├── LXC Home Assistant + Node-RED → Domotique & automatisation
+    ├── LXC Grafana       → Monitoring
+    └── LXC Docker        → Services conteneurisés
+         │
+    ESP32 (MQTT)
+    ├── Volets connectés custom
+    └── Capteurs environnementaux
+```
+
+---
+
+## 🖥️ Infrastructure
+
+| Composant | Technologie | Détail |
+|---|---|---|
+| Hyperviseur | Proxmox VE | VMs + conteneurs LXC sur Mini PC |
+| Firewall/Routeur | pfSense | VLANs, règles firewall, DNS |
+| Exposition sécurisée | Cloudflare Tunnel + Access | Zero Trust, HTTPS auto, auth |
+| DNS local | Pi-hole | Blocage pub réseau entier |
+| Monitoring | Grafana + Prometheus | CPU, RAM, réseau en temps réel |
+
+---
+
+## ⚙️ Services
+
+| Service | Stack | Accès |
+|---|---|---|
+| Domotique | Home Assistant | service.mondomaine.fr |
+| Automatisation | Node-RED | Flows MQTT, webhooks |
+| Reverse proxy | Cloudflare Tunnel | SSL automatique |
+
+---
+
+## 🔌 IoT & Embarqué
+
+**Volets connectés custom**
+- ESP32 programmé en C++ (Arduino/PlatformIO)
+- Communication MQTT vers Home Assistant
+- Automatisations Node-RED (horaires, capteurs)
+
+**Capteurs environnementaux**
+- ESP32 + DHT22 (température/humidité)
+- Données remontées via MQTT → Grafana
+
+---
+
+## 🎓 Certifications
+
+- ✅ Microsoft Azure Fundamentals (AZ-900)
+- ✅ Docker
+- ✅ Cisco (Networking)
+- 🔄 CCNA — en cours
+- 🔜 AZ-104 Azure Administrator
+
+---
+
+## 🚧 Roadmap
+
+- [ ] pfSense — segmentation VLANs complète
+- [ ] Ansible — automatisation config VMs
+- [ ] Terraform — déploiement infra Azure
+- [ ] GitHub Actions — CI/CD pipeline
+- [ ] Azure IoT Hub — connexion ESP32 cloud
+- [ ] AZ-220 Azure IoT Developer
+
+---
+
+## 📚 Stack technique
+
+`Proxmox` `pfSense` `Docker` `Home Assistant` `Node-RED` `Grafana`
+`Cloudflare` `ESP32` `MQTT` `Python` `Ansible` `Terraform` `Azure`
