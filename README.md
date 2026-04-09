@@ -80,6 +80,7 @@ Mini PC — Proxmox
 - ✅ Docker
 - 🔄 Python — en cours
 - 🔜 Terraform
+- 🔜 Ansible
 
 ---
 
