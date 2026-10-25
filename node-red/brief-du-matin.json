@@ -4,7 +4,7 @@
     "type": "tab",
     "label": "Brief du matin",
     "disabled": false,
-    "info": "Brief vocal du matin et rappel 40 min avant le premier cours, sur le Google Home. Emploi du temps recopié depuis le vault (BTS SIO/Emploi du temps BTS SIO2)."
+    "info": "Un seul brief vocal par jour de cours, 35 min avant le premier cours, sur le Google Home. Emploi du temps recopié depuis le vault (BTS SIO/Emploi du temps BTS SIO2)."
   },
   {
     "id": "inj_daily",
@@ -61,7 +61,7 @@
     "type": "function",
     "z": "brief_du_matin_tab",
     "name": "Planning du jour",
-    "func": "// Planning du jour : calcule l'heure du brief (40 min avant le premier cours).\n// Emploi du temps recopié depuis le vault : \"BTS SIO/Emploi du temps BTS SIO2\".\n// Si l'emploi du temps change, modifier SCHEDULE ici (le 3e champ true = cours optionnel, ignoré).\nconst PARIS = 'Europe/Paris';\nconst AVANCE_MIN = 40;          // minutes avant le premier cours\nconst HEURE_SANS_COURS = [9, 0]; // heure du brief les jours sans cours\n// Début exact non noté : seule la fin compte. Toussaint 2026 : reprise le lundi 2 novembre.\nconst VACANCES = [['2026-10-01', '2026-11-01']];\nconst SCHEDULE = {\n    1: [['08:50', 'Aide individualisée', true], ['10:00', 'Anglais'], ['10:50', 'Maths'], ['12:30', 'SISR'], ['16:10', 'CEJM']],\n    2: [['08:00', 'Atelier mathématiques'], ['08:50', 'Mathématiques'], ['10:00', 'SISR'], ['14:10', 'Anglais'], ['15:20', 'Culture générale']],\n    3: [['12:30', 'Aide individualisée', true], ['13:20', 'CEJM'], ['15:20', 'Mathématiques'], ['16:10', 'Culture générale']],\n    4: [['08:25', 'Cybersécurité'], ['10:50', 'Cybersécurité'], ['13:20', 'CEJM'], ['15:20', 'SISR']],\n    5: [['08:00', 'Ateliers pro SISR'], ['10:00', 'Ateliers pro SISR'], ['13:20', 'CEJM'], ['15:20', 'Support et mise à disposition de services informatiques']]\n};\nconst JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];\nconst MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];\n\nfunction heureParis(d) {\n    const p = {};\n    new Intl.DateTimeFormat('en-GB', {\n        timeZone: PARIS, year: 'numeric', month: '2-digit', day: '2-digit',\n        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'\n    }).formatToParts(d).forEach(x => { p[x.type] = x.value; });\n    return p;\n}\nconst iso = d => d.toISOString().slice(0, 10);\nconst enVacances = s => VACANCES.some(([a, b]) => s >= a && s <= b);\nfunction coursDu(jour) {                       // jour : Date en \"heure murale\" (UTC)\n    if (enVacances(iso(jour))) { return []; }\n    const liste = (SCHEDULE[jour.getUTCDay()] || []).filter(c => !c[2]);\n    return liste.filter((c, i) => i === 0 || c[1] !== liste[i - 1][1]); // fusionne deux créneaux de suite\n}\n\nconst now = msg.now ? new Date(msg.now) : new Date();\nconst p = heureParis(now);\nconst murale = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);\nconst aujourdhui = new Date(Date.UTC(+p.year, +p.month - 1, +p.day));\nconst cours = coursDu(aujourdhui);\n\nconst jourMs = [+p.year, +p.month - 1, +p.day];\nlet brief, rappel = null;\nif (cours.length) {\n    const [h, m] = cours[0][0].split(':').map(Number);\n    const avant = Date.UTC(...jourMs, h, m - AVANCE_MIN);       // premier cours - 40 min\n    const matin = Date.UTC(...jourMs, HEURE_SANS_COURS[0], HEURE_SANS_COURS[1]);\n    brief = Math.min(avant, matin);                              // le brief reste un brief du matin\n    if (avant - brief >= 10 * 60000) { rappel = avant; }         // sinon le brief fait déjà office de rappel\n} else {\n    brief = Date.UTC(...jourMs, HEURE_SANS_COURS[0], HEURE_SANS_COURS[1]);\n}\n\nlet prochain = null;\nif (!cours.length) {\n    for (let i = 1; i <= 14 && !prochain; i++) {\n        const j = new Date(aujourdhui.getTime() + i * 86400000);\n        const c = coursDu(j);\n        if (c.length) {\n            prochain = { jour: `${JOURS[j.getUTCDay()]} ${j.getUTCDate()} ${MOIS[j.getUTCMonth()]}`, heure: c[0][0], nom: c[0][1] };\n        }\n    }\n}\n\nmsg.plan = {\n    date: `${JOURS[aujourdhui.getUTCDay()]} ${aujourdhui.getUTCDate()} ${MOIS[aujourdhui.getUTCMonth()]}`,\n    cours: cours.map(c => ({ heure: c[0], nom: c[1] })),\n    prochain\n};\nconst hm = t => { const d = new Date(t); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };\nconst envois = [];\nif (msg.test) {\n    envois.push({ kind: 'brief', delay: 0 });\n} else {\n    if (brief >= murale) { envois.push({ kind: 'brief', delay: brief - murale }); }\n    if (rappel !== null && rappel >= murale) { envois.push({ kind: 'rappel', delay: rappel - murale }); }\n}\nif (!envois.length) {\n    node.status({ fill: 'grey', shape: 'ring', text: 'heures déjà passées' });\n    return null;\n}\nnode.status({ fill: 'green', shape: 'dot', text: 'brief ' + hm(brief) + (rappel !== null ? ', rappel ' + hm(rappel) : '') });\nenvois.forEach(e => node.send(Object.assign({}, msg, e, { plan: Object.assign({}, msg.plan, { minutes: AVANCE_MIN }) })));\nreturn null;\n",
+    "func": "// Planning du jour : un seul brief par jour, 35 min avant le premier cours de la journée.\n// Pas de cours (week-end, vacances) = pas de brief.\n// Emploi du temps recopié depuis le vault : \"BTS SIO/Emploi du temps BTS SIO2\".\n// Si l'emploi du temps change, modifier SCHEDULE ici (le 3e champ true = cours optionnel, ignoré).\nconst PARIS = 'Europe/Paris';\nconst AVANCE_MIN = 35;          // minutes avant le premier cours\n// Début exact non noté : seule la fin compte. Toussaint 2026 : reprise le lundi 2 novembre.\nconst VACANCES = [['2026-10-01', '2026-11-01']];\nconst SCHEDULE = {\n    1: [['08:50', 'Aide individualisée', true], ['10:00', 'Anglais'], ['10:50', 'Maths'], ['12:30', 'SISR'], ['16:10', 'CEJM']],\n    2: [['08:00', 'Atelier mathématiques', true], ['08:50', 'Mathématiques'], ['10:00', 'SISR'], ['14:10', 'Anglais'], ['15:20', 'Culture générale']],\n    3: [['12:30', 'Aide individualisée', true], ['13:20', 'CEJM'], ['15:20', 'Mathématiques'], ['16:10', 'Culture générale']],\n    4: [['08:25', 'Cybersécurité'], ['10:50', 'Cybersécurité'], ['13:20', 'CEJM'], ['15:20', 'SISR']],\n    5: [['08:00', 'Ateliers pro SISR'], ['10:00', 'Ateliers pro SISR'], ['13:20', 'CEJM'], ['15:20', 'Support et mise à disposition de services informatiques']]\n};\nconst JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];\nconst MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];\n\nfunction heureParis(d) {\n    const p = {};\n    new Intl.DateTimeFormat('en-GB', {\n        timeZone: PARIS, year: 'numeric', month: '2-digit', day: '2-digit',\n        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'\n    }).formatToParts(d).forEach(x => { p[x.type] = x.value; });\n    return p;\n}\nconst iso = d => d.toISOString().slice(0, 10);\nconst enVacances = s => VACANCES.some(([a, b]) => s >= a && s <= b);\nfunction coursDu(jour) {                       // jour : Date en \"heure murale\" (UTC)\n    if (enVacances(iso(jour))) { return []; }\n    const liste = (SCHEDULE[jour.getUTCDay()] || []).filter(c => !c[2]);\n    return liste.filter((c, i) => i === 0 || c[1] !== liste[i - 1][1]); // fusionne deux créneaux de suite\n}\n\nconst now = msg.now ? new Date(msg.now) : new Date();\nconst p = heureParis(now);\nconst murale = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);\nconst aujourdhui = new Date(Date.UTC(+p.year, +p.month - 1, +p.day));\nconst cours = coursDu(aujourdhui);\n\nconst jourMs = [+p.year, +p.month - 1, +p.day];\nmsg.plan = {\n    date: `${JOURS[aujourdhui.getUTCDay()]} ${aujourdhui.getUTCDate()} ${MOIS[aujourdhui.getUTCMonth()]}`,\n    cours: cours.map(c => ({ heure: c[0], nom: c[1] }))\n};\n\nif (msg.test) {                       // bouton de test : parle tout de suite\n    msg.delay = 0;\n    return msg;\n}\nif (!cours.length) {\n    node.status({ fill: 'grey', shape: 'ring', text: 'pas de cours, pas de brief' });\n    return null;\n}\nconst [h, m] = cours[0][0].split(':').map(Number);\nconst brief = Date.UTC(...jourMs, h, m - AVANCE_MIN);\nif (brief < murale) {\n    node.status({ fill: 'grey', shape: 'ring', text: 'heure du brief déjà passée' });\n    return null;\n}\nmsg.delay = brief - murale;\nconst d = new Date(brief);\nnode.status({ fill: 'green', shape: 'dot', text: 'brief à ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0') });\nreturn msg;\n",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
@@ -97,40 +97,7 @@
     "y": 100,
     "wires": [
       [
-        "sw_kind"
-      ]
-    ]
-  },
-  {
-    "id": "sw_kind",
-    "type": "switch",
-    "z": "brief_du_matin_tab",
-    "name": "brief ou rappel",
-    "property": "kind",
-    "propertyType": "msg",
-    "rules": [
-      {
-        "t": "eq",
-        "v": "brief",
-        "vt": "str"
-      },
-      {
-        "t": "eq",
-        "v": "rappel",
-        "vt": "str"
-      }
-    ],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 2,
-    "x": 810,
-    "y": 100,
-    "wires": [
-      [
         "ha_weather"
-      ],
-      [
-        "fn_brief"
       ]
     ]
   },
@@ -189,7 +156,7 @@
     "type": "function",
     "z": "brief_du_matin_tab",
     "name": "Rédiger le texte",
-    "func": "// Rédiger le brief : transforme le planning et la météo en phrase à dire à voix haute.\nconst MICRO = 'media_player.chambre_tom';\nconst VOIX = 'tts.google_translate_en_com'; // voix Google Translate, langue forcée en français plus bas\nconst METEO = {\n    'clear-night': 'ciel dégagé', 'cloudy': 'nuageux', 'exceptional': 'conditions exceptionnelles',\n    'fog': 'brouillard', 'hail': 'grêle', 'lightning': 'orageux', 'lightning-rainy': 'orages et pluie',\n    'partlycloudy': 'partiellement nuageux', 'pouring': 'forte pluie', 'rainy': 'pluvieux',\n    'snowy': 'neigeux', 'snowy-rainy': 'neige fondue', 'sunny': 'ensoleillé',\n    'windy': 'venteux', 'windy-variant': 'venteux et nuageux'\n};\nconst dire = hhmm => {\n    const [h, m] = hhmm.split(':').map(Number);\n    return m ? `${h} heures ${m}` : `${h} heures`;\n};\n\nconst plan = msg.plan;\nlet texte;\n\nif (msg.kind === 'rappel') {\n    texte = `Rappel : ton premier cours, ${plan.cours[0].nom}, commence à ${dire(plan.cours[0].heure)}, dans ${plan.minutes} minutes.`;\n} else {\n    const attr = (msg.data && msg.data.attributes) || {};\n    const etat = msg.payload;\n    texte = `Bonjour Tom. Nous sommes ${plan.date}.`;\n\n    if (typeof attr.temperature === 'number') {\n        texte += ` Dehors, il fait ${Math.round(attr.temperature)} degrés`;\n        texte += METEO[etat] ? `, ${METEO[etat]}.` : '.';\n    }\n\n    if (plan.cours.length) {\n        texte += ' Aujourd\\'hui, tu as : ' + plan.cours.map(c => `${c.nom} à ${dire(c.heure)}`).join(', ') + '.';\n        texte += ` Ton premier cours commence à ${dire(plan.cours[0].heure)}. Bonne journée !`;\n    } else if (plan.prochain) {\n        texte += ` Pas de cours aujourd'hui. Prochain cours : ${plan.prochain.jour}, à ${dire(plan.prochain.heure)}. Profite de ta journée !`;\n    } else {\n        texte += ' Pas de cours aujourd\\'hui. Profite de ta journée !';\n    }\n}\n\nmsg.brief = texte;\nmsg.payload = {\n    action: 'tts.speak',\n    target: { entity_id: [VOIX] },\n    data: { media_player_entity_id: MICRO, message: texte, language: 'fr' }\n};\nreturn msg;\n",
+    "func": "// Rédiger le brief : transforme le planning et la météo en phrase à dire à voix haute.\nconst MICRO = 'media_player.chambre_tom';\nconst VOIX = 'tts.google_translate_en_com'; // voix Google Translate, langue forcée en français plus bas\nconst METEO = {\n    'clear-night': 'ciel dégagé', 'cloudy': 'nuageux', 'exceptional': 'conditions exceptionnelles',\n    'fog': 'brouillard', 'hail': 'grêle', 'lightning': 'orageux', 'lightning-rainy': 'orages et pluie',\n    'partlycloudy': 'partiellement nuageux', 'pouring': 'forte pluie', 'rainy': 'pluvieux',\n    'snowy': 'neigeux', 'snowy-rainy': 'neige fondue', 'sunny': 'ensoleillé',\n    'windy': 'venteux', 'windy-variant': 'venteux et nuageux'\n};\nconst dire = hhmm => {\n    const [h, m] = hhmm.split(':').map(Number);\n    return m ? `${h} heures ${m}` : `${h} heures`;\n};\n\nconst plan = msg.plan;\nconst attr = (msg.data && msg.data.attributes) || {};\nlet texte = `Bonjour Tom. Nous sommes ${plan.date}.`;\n\nif (typeof attr.temperature === 'number') {\n    texte += ` Dehors, il fait ${Math.round(attr.temperature)} degrés`;\n    texte += METEO[msg.payload] ? `, ${METEO[msg.payload]}.` : '.';\n}\n\nif (plan.cours.length) {\n    texte += \" Aujourd'hui, tu as : \" + plan.cours.map(c => `${c.nom} à ${dire(c.heure)}`).join(', ') + '.';\n    texte += ` Ton premier cours commence à ${dire(plan.cours[0].heure)}. Bonne journée !`;\n} else {\n    texte += \" Pas de cours aujourd'hui.\";\n}\n\nmsg.brief = texte;\nmsg.payload = {\n    action: 'tts.speak',\n    target: { entity_id: [VOIX] },\n    data: { media_player_entity_id: MICRO, message: texte, language: 'fr' }\n};\nreturn msg;\n",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,

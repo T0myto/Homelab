@@ -34,6 +34,18 @@ Tous tournent en conteneurs Docker dans la VM, gérés avec Portainer.
 
 Intégrations Home Assistant en place : Google Cast, Google Translate text-to-speech, HACS, Node-RED Companion.
 
+## ⏰ Brief du matin
+
+Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, météo et cours du jour. Rien le week-end ni pendant les vacances.
+
+| Jour | Début des cours | Brief |
+|---|---|---|
+| Lundi | 10h00 | 9h25 |
+| Mardi | 8h50 | 8h15 |
+| Mercredi | 13h20 | 12h45 |
+| Jeudi | 8h25 | 7h50 |
+| Vendredi | 8h00 | 7h25 |
+
 ## 🚧 Roadmap
 
 - [x] Proxmox VE
@@ -41,7 +53,7 @@ Intégrations Home Assistant en place : Google Cast, Google Translate text-to-sp
 - [x] Home Assistant et Node-RED, reliés entre eux
 - [x] Google Home et voix ajoutés dans Home Assistant
 - [x] Test vocal du Google Home
-- [x] Flow Node-RED : brief du matin et rappel avant le premier cours (`node-red/brief-du-matin.json`)
+- [x] Flow Node-RED : un brief vocal par jour de cours, 35 min avant le premier cours (`node-red/brief-du-matin.json`)
 - [ ] Dashboard Home Assistant sur la tablette
 - [ ] Pi-hole
 - [ ] Grafana
