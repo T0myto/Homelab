@@ -1,7 +1,7 @@
 <div align="center">
     
 > Étudiant BTS SIO SISR | Passionné réseau, cloud et électronique embarquée
-> Construit et maintiens une infrastructure homelab depuis 2 ans
+> Je bricole du homelab depuis 2 ans — version actuelle refaite en 2026
 > 
 # 🏠 Homelab — Tom MAUDET
 
@@ -17,14 +17,28 @@
 
 ---
 
-## 🗺️ Architecture réseau
+## 📍 État actuel
+
+| Élément | Détail |
+|---|---|
+| Hyperviseur | Proxmox VE — installé ✅ |
+| CPU / RAM | Xeon E3-1241 v3 / 16 Go |
+| Stockage | 1 × HDD 1 To (extension prévue) |
+| Réseau | Bridge `vmbr0` |
+| NAS | Projet séparé — 5 × HDD 1 To |
+
+---
+
+## 🎯 Architecture cible
+
+> Ce que le homelab doit devenir. Avancement détaillé dans la roadmap.
 
 ```
 Internet
     │
 Cloudflare Zero Trust (tunnel chiffré)
     │
-Mini PC — Proxmox
+Serveur — Proxmox
     ├── VM pfSense        → Routeur/Firewall — VLANs
     ├── LXC Pi-hole       → DNS filtering
     ├── LXC Home Assistant + Node-RED → Domotique & automatisation
@@ -38,55 +52,43 @@ Mini PC — Proxmox
 
 ---
 
-## 🖥️ Infrastructure
-
-| Composant | Technologie | Détail |
-|---|---|---|
-| Hyperviseur | Proxmox VE | VMs + conteneurs LXC sur Mini PC |
-| Firewall/Routeur | pfSense | VLANs, règles firewall, DNS |
-| Exposition sécurisée | Cloudflare Tunnel + Access | Zero Trust, HTTPS auto, auth |
-| DNS local | Pi-hole | Blocage pub réseau entier |
-| Monitoring | Grafana + Prometheus | CPU, RAM, réseau en temps réel |
-
----
-
 ## ⚙️ Services
 
-| Service | Stack | Accès |
+| Service | Rôle | État |
 |---|---|---|
-| Domotique | Home Assistant | homeassit.tom-maudet.fr |
-| Automatisation | Node-RED | Flows MQTT, webhooks |
-| Reverse proxy | Cloudflare Tunnel | SSL automatique |
+| Docker | Socle des conteneurs | 🔜 à installer |
+| Pi-hole | DNS local + blocage pub réseau entier | 🔜 à installer |
+| Home Assistant | Domotique | 🔜 à installer |
+| Node-RED | Automatisations (flows MQTT, webhooks) | 🔜 à installer |
+| Grafana + Prometheus | Monitoring CPU, RAM, réseau | 🔜 à installer |
+| pfSense | Routeur/Firewall, VLANs | 🔜 à installer |
+| Cloudflare Tunnel + Access | Exposition sécurisée Zero Trust, HTTPS auto | 🔜 à installer |
 
 ---
 
-## 🔌 IoT & Embarqué
+## 🔌 IoT & Embarqué — 🔄 en cours
 
 **Volets connectés custom**
 - ESP32 programmé en C++ (Arduino/PlatformIO)
-- Communication MQTT vers Home Assistant
-- Automatisations Node-RED (horaires, capteurs)
+- Soudure en cours de finition
+- Prévu : communication MQTT vers Home Assistant, automatisations Node-RED (horaires, capteurs)
 
 **Capteurs environnementaux**
 - ESP32 + DHT22 (température/humidité)
-- Données remontées via MQTT → Grafana
-
----
-
-## 🎓 Certifications
-
-- ✅ Cisco (Networking/Troubleshooting)
-- ✅ Microsoft Azure
-- ✅ Docker
-- 🔄 Python — en cours
-- 🔜 Terraform
-- 🔜 Ansible
+- Prévu : données remontées via MQTT → Grafana
 
 ---
 
 ## 🚧 Roadmap
 
+- [x] Proxmox VE installé
+- [ ] Docker
+- [ ] Pi-hole
+- [ ] Home Assistant + Node-RED
+- [ ] Grafana + Prometheus
 - [ ] pfSense — segmentation VLANs complète
+- [ ] Cloudflare Tunnel + Access
+- [ ] ESP32 — finir la soudure des volets et des capteurs
 - [ ] Ansible — automatisation config VMs
 - [ ] Terraform — déploiement infra Azure
 - [ ] GitHub Actions — CI/CD pipeline
