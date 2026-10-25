@@ -89,11 +89,7 @@ Serveur — Proxmox
 - [ ] pfSense — segmentation VLANs complète
 - [ ] Cloudflare Tunnel + Access
 - [ ] ESP32 — finir la soudure des volets et des capteurs
-- [ ] Ansible — automatisation config VMs
-- [ ] Terraform — déploiement infra Azure
 - [ ] GitHub Actions — CI/CD pipeline
-- [ ] Azure IoT Hub — connexion ESP32 cloud
-- [ ] AZ-220 Azure IoT Developer
 
 ---
 
