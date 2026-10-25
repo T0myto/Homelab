@@ -40,8 +40,8 @@ Intégrations Home Assistant en place : Google Cast, Google Translate text-to-sp
 - [x] VM Debian + Docker + Portainer
 - [x] Home Assistant et Node-RED, reliés entre eux
 - [x] Google Home et voix ajoutés dans Home Assistant
-- [ ] Test vocal du Google Home
-- [ ] Flow Node-RED : brief du matin lu par le Google Home
+- [x] Test vocal du Google Home
+- [x] Flow Node-RED : brief du matin et rappel avant le premier cours (`node-red/brief-du-matin.json`)
 - [ ] Dashboard Home Assistant sur la tablette
 - [ ] Pi-hole
 - [ ] Grafana
