@@ -9,7 +9,6 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
-![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 
 > Homelab personnel évolutif combinant virtualisation, réseau, IoT et automatisation cloud.
 
@@ -96,4 +95,4 @@ Serveur — Proxmox
 ## 📚 Stack technique
 
 `Proxmox` `pfSense` `Docker` `Home Assistant` `Node-RED` `Grafana`
-`Cloudflare` `ESP32` `MQTT` `Python` `Ansible` `Terraform` `Azure`
+`Cloudflare` `ESP32` `MQTT` `Python`
