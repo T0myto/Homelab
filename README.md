@@ -18,24 +18,29 @@ Un dashboard Home Assistant sur une tablette, et un brief lu à voix haute chaqu
 | CPU / RAM | Xeon E3-1241 v3 / 16 Go |
 | Stockage | 1 × HDD 1 To |
 | Réseau | Bridge `vmbr0` |
-| VM | Debian, avec Docker et Portainer |
+| VM | `docker-host` : Debian 13, 2 CPU, 6 Go de RAM, Docker 29 |
 
 ## ⚙️ Services
 
+Tous tournent en conteneurs Docker dans la VM, gérés avec Portainer.
+
 | Service | Rôle | État |
 |---|---|---|
-| Docker + Portainer | Conteneurs et interface graphique | ✅ installé |
-| Home Assistant | Domotique et dashboard | ✅ installé |
+| Portainer CE 2.45 | Interface graphique de Docker | ✅ installé |
+| Home Assistant 2026.10 | Domotique et dashboard | ✅ installé |
 | Node-RED | Automatisations | ✅ installé, relié à Home Assistant |
 | Pi-hole | DNS local et blocage de pubs | 🔜 à installer |
 | Grafana | Monitoring | 🔜 à installer |
+
+Intégrations Home Assistant en place : Google Cast, Google Translate text-to-speech, HACS, Node-RED Companion.
 
 ## 🚧 Roadmap
 
 - [x] Proxmox VE
 - [x] VM Debian + Docker + Portainer
 - [x] Home Assistant et Node-RED, reliés entre eux
-- [ ] Google Home dans Home Assistant (test vocal)
+- [x] Google Home et voix ajoutés dans Home Assistant
+- [ ] Test vocal du Google Home
 - [ ] Flow Node-RED : brief du matin lu par le Google Home
 - [ ] Dashboard Home Assistant sur la tablette
 - [ ] Pi-hole
