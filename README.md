@@ -27,6 +27,7 @@ Un dashboard Home Assistant sur une tablette, et un brief lu à voix haute chaqu
 | Domotique | HACS (Mushroom, card-mod, kiosk-mode, thème Catppuccin) | Extensions et apparence du dashboard | ✅ en service |
 | Automatisation | Node-RED | Brief du matin, écran de la tablette, alertes | ✅ en service |
 | Objets connectés | Tuya (lampes LSC Smart Connect) | Lumières, via le cloud Tuya | ✅ en service |
+| Objets connectés | ESPSomfy RTS (ESP32 et radio 433 MHz) | Volets Somfy RTS, 4 commandes dans Home Assistant | ✅ en service |
 | Audio | Google Home / Google Cast, Google Translate TTS | Fait parler le Google Home | ✅ en service |
 | Audio | Spotify | Lecteur dans le dashboard | ✅ en service |
 | Données | Google Agenda (lien iCal), Met.no | Agenda du jour et météo | ✅ en service |
@@ -84,7 +85,7 @@ Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, mé
 - [x] Afficher le dashboard sur la tablette (application Home Assistant)
 - [x] Écran de la tablette éteint de 23h à 7h15 par ADB (`node-red/ecran-tablette.json`)
 - [x] Lampes Tuya dans Home Assistant et dans le dashboard
-- [ ] Finir le module des volets, puis l'ajouter au dashboard
+- [x] Module des volets (ESPSomfy RTS) dans Home Assistant et dans le dashboard
 - [ ] Pi-hole
 - [ ] VPN (solution à déterminer)
 - [ ] Grafana
