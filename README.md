@@ -36,7 +36,7 @@ Intégrations Home Assistant en place : Google Cast, Google Translate text-to-sp
 
 ## ⏰ Brief du matin
 
-Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, météo et cours du jour. Rien le week-end ni pendant les vacances.
+Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, météo, cours du jour et événements de l'agenda du jour. Rien le week-end ni pendant les vacances.
 
 | Jour | Début des cours | Brief |
 |---|---|---|

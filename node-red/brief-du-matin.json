@@ -147,6 +147,98 @@
     "y": 200,
     "wires": [
       [
+        "fn_agenda"
+      ]
+    ]
+  },
+  {
+    "id": "fn_agenda",
+    "type": "function",
+    "z": "brief_du_matin_tab",
+    "name": "Préparer agenda",
+    "func": "// Préparer l'agenda : garde la météo de côté, puis demande à Home Assistant les événements du jour.\nmsg.meteo = (msg.data && msg.data.attributes)\n    ? { etat: msg.payload, temperature: msg.data.attributes.temperature }\n    : null;\nconst p = {};\nnew Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' })\n    .formatToParts(new Date()).forEach(x => { p[x.type] = x.value; });\nconst jour = `${p.year}-${p.month}-${p.day}`;\nmsg.payload = {\n    action: 'calendar.get_events',\n    target: { entity_id: ['calendar.calendrier_google'] },\n    data: { start_date_time: `${jour} 00:00:00`, end_date_time: `${jour} 23:59:59` }\n};\nreturn msg;\n",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 640,
+    "y": 300,
+    "wires": [
+      [
+        "ha_agenda"
+      ]
+    ]
+  },
+  {
+    "id": "ha_agenda",
+    "type": "api-call-service",
+    "z": "brief_du_matin_tab",
+    "name": "Agenda du jour",
+    "server": "0b6bdf1d09748a46",
+    "version": 7,
+    "debugenabled": false,
+    "action": "calendar.get_events",
+    "floorId": [],
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [],
+    "labelId": [],
+    "data": "",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [
+      {
+        "property": "payload",
+        "propertyType": "msg",
+        "value": "",
+        "valueType": "results"
+      }
+    ],
+    "queue": "none",
+    "blockInputOverrides": false,
+    "domain": "calendar",
+    "service": "get_events",
+    "x": 860,
+    "y": 300,
+    "wires": [
+      [
+        "fn_brief"
+      ]
+    ]
+  },
+  {
+    "id": "catch_meteo",
+    "type": "catch",
+    "z": "brief_du_matin_tab",
+    "name": "météo en panne",
+    "scope": [
+      "ha_weather"
+    ],
+    "uncaught": false,
+    "x": 420,
+    "y": 260,
+    "wires": [
+      [
+        "fn_agenda"
+      ]
+    ]
+  },
+  {
+    "id": "catch_agenda",
+    "type": "catch",
+    "z": "brief_du_matin_tab",
+    "name": "agenda en panne",
+    "scope": [
+      "ha_agenda"
+    ],
+    "uncaught": false,
+    "x": 1080,
+    "y": 300,
+    "wires": [
+      [
         "fn_brief"
       ]
     ]
@@ -156,14 +248,14 @@
     "type": "function",
     "z": "brief_du_matin_tab",
     "name": "Rédiger le texte",
-    "func": "// Rédiger le brief : transforme le planning et la météo en phrase à dire à voix haute.\nconst MICRO = 'media_player.chambre_tom';\nconst VOIX = 'tts.google_translate_en_com'; // voix Google Translate, langue forcée en français plus bas\nconst METEO = {\n    'clear-night': 'ciel dégagé', 'cloudy': 'nuageux', 'exceptional': 'conditions exceptionnelles',\n    'fog': 'brouillard', 'hail': 'grêle', 'lightning': 'orageux', 'lightning-rainy': 'orages et pluie',\n    'partlycloudy': 'partiellement nuageux', 'pouring': 'forte pluie', 'rainy': 'pluvieux',\n    'snowy': 'neigeux', 'snowy-rainy': 'neige fondue', 'sunny': 'ensoleillé',\n    'windy': 'venteux', 'windy-variant': 'venteux et nuageux'\n};\nconst dire = hhmm => {\n    const [h, m] = hhmm.split(':').map(Number);\n    return m ? `${h} heures ${m}` : `${h} heures`;\n};\n\nconst plan = msg.plan;\nconst attr = (msg.data && msg.data.attributes) || {};\nlet texte = `Bonjour Tom. Nous sommes ${plan.date}.`;\n\nif (typeof attr.temperature === 'number') {\n    texte += ` Dehors, il fait ${Math.round(attr.temperature)} degrés`;\n    texte += METEO[msg.payload] ? `, ${METEO[msg.payload]}.` : '.';\n}\n\nif (plan.cours.length) {\n    texte += \" Aujourd'hui, tu as : \" + plan.cours.map(c => `${c.nom} à ${dire(c.heure)}`).join(', ') + '.';\n    texte += ` Ton premier cours commence à ${dire(plan.cours[0].heure)}. Bonne journée !`;\n} else {\n    texte += \" Pas de cours aujourd'hui.\";\n}\n\nmsg.brief = texte;\nmsg.payload = {\n    action: 'tts.speak',\n    target: { entity_id: [VOIX] },\n    data: { media_player_entity_id: MICRO, message: texte, language: 'fr' }\n};\nreturn msg;\n",
+    "func": "// Rédiger le brief : transforme le planning et la météo en phrase à dire à voix haute.\nconst MICRO = 'media_player.chambre_tom';\nconst VOIX = 'tts.google_translate_en_com'; // voix Google Translate, langue forcée en français plus bas\nconst METEO = {\n    'clear-night': 'ciel dégagé', 'cloudy': 'nuageux', 'exceptional': 'conditions exceptionnelles',\n    'fog': 'brouillard', 'hail': 'grêle', 'lightning': 'orageux', 'lightning-rainy': 'orages et pluie',\n    'partlycloudy': 'partiellement nuageux', 'pouring': 'forte pluie', 'rainy': 'pluvieux',\n    'snowy': 'neigeux', 'snowy-rainy': 'neige fondue', 'sunny': 'ensoleillé',\n    'windy': 'venteux', 'windy-variant': 'venteux et nuageux'\n};\nconst dire = hhmm => {\n    const [h, m] = hhmm.split(':').map(Number);\n    return m ? `${h} heures ${m}` : `${h} heures`;\n};\n\nconst plan = msg.plan;\nconst meteo = msg.meteo || {};\nconst heureLocale = iso => iso.slice(11, 16);   // l'heure est déjà donnée en heure de Paris\nlet texte = `Bonjour Tom. Nous sommes ${plan.date}.`;\n\nif (typeof meteo.temperature === 'number') {\n    texte += ` Dehors, il fait ${Math.round(meteo.temperature)} degrés`;\n    texte += METEO[meteo.etat] ? `, ${METEO[meteo.etat]}.` : '.';\n}\n\nif (plan.cours.length) {\n    texte += \" Aujourd'hui, tu as : \" + plan.cours.map(c => `${c.nom} à ${dire(c.heure)}`).join(', ') + '.';\n    texte += ` Ton premier cours commence à ${dire(plan.cours[0].heure)}.`;\n} else {\n    texte += \" Pas de cours aujourd'hui.\";\n}\n\n// Événements de l'agenda Google prévus aujourd'hui (ceux qui ne sont pas déjà finis)\nconst reponse = (msg.payload && msg.payload['calendar.calendrier_google']) || {};\nconst evenements = (reponse.events || []).filter(e => !e.end || e.end.length <= 10 || new Date(e.end) > new Date());\nif (evenements.length) {\n    texte += \" Dans ton agenda aujourd'hui : \" + evenements.map(e =>\n        e.start && e.start.length > 10 ? `${e.summary} à ${dire(heureLocale(e.start))}` : `${e.summary}, toute la journée`\n    ).join(', ') + '.';\n}\n\ntexte += ' Bonne journée !';\nmsg.brief = texte;\nmsg.payload = {\n    action: 'tts.speak',\n    target: { entity_id: [VOIX] },\n    data: { media_player_entity_id: MICRO, message: texte, language: 'fr' }\n};\nreturn msg;\n",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 860,
+    "x": 1100,
     "y": 200,
     "wires": [
       [
@@ -195,7 +287,7 @@
     "blockInputOverrides": false,
     "domain": "tts",
     "service": "speak",
-    "x": 1110,
+    "x": 1340,
     "y": 180,
     "wires": [
       []
@@ -214,7 +306,7 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1090,
+    "x": 1320,
     "y": 240,
     "wires": []
   }
