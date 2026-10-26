@@ -89,13 +89,11 @@
           "type": "grid",
           "cards": [
             { "type": "heading", "heading": "Lumières", "heading_style": "title", "icon": "mdi:lightbulb-group" },
-            { "type": "custom:mushroom-template-card", "primary": "Tout allumer", "secondary": "", "icon": "mdi:lightbulb-on", "icon_color": "green", "fill_container": true, "layout": "horizontal", "tap_action": { "action": "perform-action", "perform_action": "scene.turn_on", "target": { "entity_id": "scene.lumieres_on" } } },
-            { "type": "custom:mushroom-template-card", "primary": "Tout éteindre", "secondary": "", "icon": "mdi:lightbulb-off", "icon_color": "blue-grey", "fill_container": true, "layout": "horizontal", "tap_action": { "action": "perform-action", "perform_action": "scene.turn_on", "target": { "entity_id": "scene.lumieres_off" } } },
+            { "type": "custom:mushroom-template-card", "primary": "Tout allumer", "secondary": "", "icon": "mdi:lightbulb-on", "icon_color": "green", "fill_container": true, "layout": "horizontal", "tap_action": { "action": "perform-action", "perform_action": "light.turn_on", "target": { "entity_id": ["light.panneau_gauche", "light.panneau_droit", "light.etageres"] } } },
+            { "type": "custom:mushroom-template-card", "primary": "Tout éteindre", "secondary": "", "icon": "mdi:lightbulb-off", "icon_color": "blue-grey", "fill_container": true, "layout": "horizontal", "tap_action": { "action": "perform-action", "perform_action": "light.turn_off", "target": { "entity_id": ["light.panneau_gauche", "light.panneau_droit", "light.etageres"] } } },
             { "type": "custom:mushroom-light-card", "entity": "light.panneau_gauche", "name": "Panneau gauche", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "custom:mushroom-light-card", "entity": "light.panneau_droit", "name": "Panneau droit", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "custom:mushroom-light-card", "entity": "light.etageres", "name": "Étagères", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
-            { "type": "custom:mushroom-light-card", "entity": "light.ampoule", "name": "Ampoule", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
-            { "type": "custom:mushroom-light-card", "entity": "light.led", "name": "LED", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "heading", "heading": "Courses", "heading_style": "title", "icon": "mdi:cart" },
             { "type": "todo-list", "entity": "todo.shopping_list" }
           ]
