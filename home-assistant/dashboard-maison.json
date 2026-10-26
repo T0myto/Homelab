@@ -1,5 +1,6 @@
 {
   "title": "Maison",
+  "kiosk_mode": { "mobile_settings": { "custom_width": 1300, "kiosk": true } },
   "views": [
     {
       "title": "Vue d'ensemble",
@@ -7,7 +8,7 @@
       "icon": "mdi:home",
       "type": "sections",
       "theme": "Catppuccin Mocha",
-      "max_columns": 4,
+      "max_columns": 3,
       "badges": [
         { "type": "entity", "entity": "weather.forecast_maison", "show_name": false, "show_state": true, "show_icon": true },
         { "type": "entity", "entity": "sun.sun", "show_name": false, "show_state": true, "show_icon": true },
@@ -64,7 +65,7 @@
               "secondary": "",
               "icon": "mdi:monitor",
               "icon_color": "amber",
-              "tap_action": { "action": "perform-action", "perform_action": "androidtv.adb_command", "data": { "entity_id": "media_player.android_tv_192_168_1_75", "command": "input keyevent 224; sleep 1; input keyevent 82" } }
+              "tap_action": { "action": "perform-action", "perform_action": "androidtv.adb_command", "data": { "entity_id": "media_player.android_tv_192_168_1_75", "command": "input keyevent 224; sleep 1; input keyevent 82; am start -a android.intent.action.VIEW -d homeassistant://navigate/dashboard-maison/ensemble io.homeassistant.companion.android" } }
             }
           ]
         },
@@ -78,7 +79,10 @@
               "card_mod": { "style": "ha-markdown { font-size: 1.5rem; line-height: 1.6; }" }
             },
             { "type": "heading", "heading": "Agenda", "heading_style": "title", "icon": "mdi:calendar" },
-            { "type": "calendar", "entities": ["calendar.calendrier_google"], "initial_view": "listWeek" }
+            { "type": "calendar", "entities": ["calendar.calendrier_google"], "initial_view": "listWeek" },
+            { "type": "heading", "heading": "Musique", "heading_style": "title", "icon": "mdi:spotify" },
+            { "type": "custom:mushroom-media-player-card", "entity": "media_player.maison_spotify", "name": "Spotify", "use_media_info": true, "use_media_artwork": true, "show_volume_level": false, "media_controls": ["on_off", "shuffle", "previous", "play_pause_stop", "next", "repeat"], "collapsible_controls": false, "fill_container": true },
+            { "type": "tile", "entity": "media_player.chambre_tom", "name": "Google Home", "vertical": false, "features": [{ "type": "media-player-volume-slider" }], "features_position": "bottom" }
           ]
         },
         {
@@ -91,15 +95,7 @@
             { "type": "custom:mushroom-light-card", "entity": "light.panneau_droit", "name": "Panneau droit", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "custom:mushroom-light-card", "entity": "light.etageres", "name": "Étagères", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "custom:mushroom-light-card", "entity": "light.ampoule", "name": "Ampoule", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
-            { "type": "custom:mushroom-light-card", "entity": "light.led", "name": "LED", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" }
-          ]
-        },
-        {
-          "type": "grid",
-          "cards": [
-            { "type": "heading", "heading": "Musique", "heading_style": "title", "icon": "mdi:spotify" },
-            { "type": "custom:mushroom-media-player-card", "entity": "media_player.maison_spotify", "name": "Spotify", "use_media_info": true, "use_media_artwork": true, "show_volume_level": false, "media_controls": ["on_off", "shuffle", "previous", "play_pause_stop", "next", "repeat"], "collapsible_controls": false, "fill_container": true },
-            { "type": "tile", "entity": "media_player.chambre_tom", "name": "Google Home", "vertical": false, "features": [{ "type": "media-player-volume-slider" }], "features_position": "bottom" },
+            { "type": "custom:mushroom-light-card", "entity": "light.led", "name": "LED", "show_brightness_control": true, "use_light_color": true, "fill_container": true, "layout": "horizontal" },
             { "type": "heading", "heading": "Courses", "heading_style": "title", "icon": "mdi:cart" },
             { "type": "todo-list", "entity": "todo.shopping_list" }
           ]
