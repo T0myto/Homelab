@@ -1,0 +1,55 @@
+{
+  "title": "Maison",
+  "views": [
+    {
+      "title": "Vue d'ensemble",
+      "path": "ensemble",
+      "icon": "mdi:home",
+      "type": "sections",
+      "max_columns": 4,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "markdown",
+              "content": "{% set j = ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'] %}{% set m = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'] %}# {{ now().strftime('%H:%M') }}\n{{ j[now().weekday()] }} {{ now().day }} {{ m[now().month-1] }}"
+            },
+            { "type": "weather-forecast", "entity": "weather.forecast_maison", "show_current": true, "show_forecast": true, "forecast_type": "daily" }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            { "type": "heading", "heading": "Cours du jour", "heading_style": "title", "icon": "mdi:school" },
+            { "type": "markdown", "content": "{{ state_attr('sensor.cours_du_jour','cours_texte') }}" },
+            { "type": "heading", "heading": "Agenda", "heading_style": "title", "icon": "mdi:calendar" },
+            { "type": "calendar", "entities": ["calendar.calendrier_google"], "initial_view": "listWeek" }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            { "type": "heading", "heading": "Lumières", "heading_style": "title", "icon": "mdi:lightbulb-group" },
+            { "type": "tile", "entity": "scene.lumieres_on", "name": "Tout allumer", "icon": "mdi:lightbulb-on", "vertical": false, "tap_action": { "action": "perform-action", "perform_action": "scene.turn_on", "target": { "entity_id": "scene.lumieres_on" } } },
+            { "type": "tile", "entity": "scene.lumieres_off", "name": "Tout éteindre", "icon": "mdi:lightbulb-off", "vertical": false, "tap_action": { "action": "perform-action", "perform_action": "scene.turn_on", "target": { "entity_id": "scene.lumieres_off" } } },
+            { "type": "tile", "entity": "light.panneau_gauche", "name": "Panneau gauche", "features": [{ "type": "light-brightness" }], "features_position": "bottom", "vertical": false },
+            { "type": "tile", "entity": "light.panneau_droit", "name": "Panneau droit", "features": [{ "type": "light-brightness" }], "features_position": "bottom", "vertical": false },
+            { "type": "tile", "entity": "light.etageres", "name": "Étagères", "features": [{ "type": "light-brightness" }], "features_position": "bottom", "vertical": false },
+            { "type": "tile", "entity": "light.ampoule", "name": "Ampoule", "features": [{ "type": "light-brightness" }], "features_position": "bottom", "vertical": false },
+            { "type": "tile", "entity": "light.led", "name": "LED", "features": [{ "type": "light-brightness" }], "features_position": "bottom", "vertical": false }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            { "type": "heading", "heading": "Musique", "heading_style": "title", "icon": "mdi:speaker" },
+            { "type": "media-control", "entity": "media_player.chambre_tom" },
+            { "type": "heading", "heading": "Courses", "heading_style": "title", "icon": "mdi:cart" },
+            { "type": "todo-list", "entity": "todo.shopping_list" }
+          ]
+        }
+      ]
+    }
+  ]
+}

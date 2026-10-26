@@ -54,6 +54,8 @@ Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, mé
 - [x] Google Home et voix ajoutés dans Home Assistant
 - [x] Test vocal du Google Home
 - [x] Flow Node-RED : un brief vocal par jour de cours, 35 min avant le premier cours (`node-red/brief-du-matin.json`)
-- [ ] Dashboard Home Assistant sur la tablette
+- [x] Dashboard Home Assistant « Maison » en paysage (`home-assistant/dashboard-maison.json`)
+- [ ] Afficher le dashboard sur la tablette
+- [ ] Volets connectés dans le dashboard
 - [ ] Pi-hole
 - [ ] Grafana
