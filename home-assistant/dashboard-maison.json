@@ -24,7 +24,48 @@
               "grid_options": { "columns": "full" },
               "card_mod": { "style": "ha-markdown { text-align: center; }" }
             },
-            { "type": "weather-forecast", "entity": "weather.forecast_maison", "show_current": true, "show_forecast": true, "forecast_type": "daily" }
+            { "type": "weather-forecast", "entity": "weather.forecast_maison", "show_current": true, "show_forecast": true, "forecast_type": "daily" },
+            { "type": "heading", "heading": "Tablette", "heading_style": "title", "icon": "mdi:tablet-dashboard" },
+            {
+              "type": "custom:mushroom-template-card",
+              "fill_container": true,
+              "layout": "horizontal",
+              "entity": "sensor.tablette_battery_level",
+              "primary": "Batterie {{ states('sensor.tablette_battery_level') }} %",
+              "secondary": "{% set n = states('sensor.tablette_battery_level') | int(0) %}{% set e = states('sensor.tablette_battery_state') %}{% if e in ['charging','full'] %}En charge{% elif n < 30 %}Branche la tablette !{% else %}Sur batterie{% endif %}",
+              "icon": "{% set n = states('sensor.tablette_battery_level') | int(0) %}{% if states('sensor.tablette_battery_state') == 'charging' %}mdi:battery-charging{% elif n < 20 %}mdi:battery-alert{% elif n < 50 %}mdi:battery-40{% else %}mdi:battery-80{% endif %}",
+              "icon_color": "{% set n = states('sensor.tablette_battery_level') | int(0) %}{% if states('sensor.tablette_battery_state') in ['charging','full'] %}green{% elif n < 20 %}red{% elif n < 40 %}orange{% else %}green{% endif %}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "fill_container": true,
+              "layout": "horizontal",
+              "entity": "media_player.android_tv_192_168_1_75",
+              "primary": "{% if states('media_player.android_tv_192_168_1_75') in ['unavailable','unknown'] %}ADB hors ligne{% else %}ADB connecté{% endif %}",
+              "secondary": "{% if states('media_player.android_tv_192_168_1_75') in ['unavailable','unknown'] %}L'écran ne s'éteindra plus{% else %}Écran piloté à distance{% endif %}",
+              "icon": "mdi:usb-flash-drive",
+              "icon_color": "{% if states('media_player.android_tv_192_168_1_75') in ['unavailable','unknown'] %}red{% else %}green{% endif %}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "fill_container": true,
+              "layout": "horizontal",
+              "primary": "Éteindre l'écran",
+              "secondary": "",
+              "icon": "mdi:monitor-off",
+              "icon_color": "blue-grey",
+              "tap_action": { "action": "perform-action", "perform_action": "androidtv.adb_command", "data": { "entity_id": "media_player.android_tv_192_168_1_75", "command": "input keyevent 223" } }
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "fill_container": true,
+              "layout": "horizontal",
+              "primary": "Allumer l'écran",
+              "secondary": "",
+              "icon": "mdi:monitor",
+              "icon_color": "amber",
+              "tap_action": { "action": "perform-action", "perform_action": "androidtv.adb_command", "data": { "entity_id": "media_player.android_tv_192_168_1_75", "command": "input keyevent 224; sleep 1; input keyevent 82" } }
+            }
           ]
         },
         {
