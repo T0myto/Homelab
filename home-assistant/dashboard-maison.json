@@ -43,8 +43,9 @@
         {
           "type": "grid",
           "cards": [
-            { "type": "heading", "heading": "Musique", "heading_style": "title", "icon": "mdi:speaker" },
-            { "type": "media-control", "entity": "media_player.chambre_tom" },
+            { "type": "heading", "heading": "Musique", "heading_style": "title", "icon": "mdi:spotify" },
+            { "type": "media-control", "entity": "media_player.maison_spotify" },
+            { "type": "tile", "entity": "media_player.chambre_tom", "name": "Google Home", "vertical": false, "features": [{ "type": "media-player-volume-slider" }], "features_position": "bottom" },
             { "type": "heading", "heading": "Courses", "heading_style": "title", "icon": "mdi:cart" },
             { "type": "todo-list", "entity": "todo.shopping_list" }
           ]
