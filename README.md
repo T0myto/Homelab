@@ -33,7 +33,7 @@ Un dashboard Home Assistant sur une tablette, et un brief lu à voix haute chaqu
 | Données | Google Agenda (lien iCal), Met.no | Agenda du jour et météo | ✅ en service |
 | Tablette | Huawei MediaPad M5 lite, application Home Assistant, ADB (Android Debug Bridge) | Affichage mural, écran éteint la nuit | ✅ en service |
 | Réseau | Pi-hole | DNS local et blocage de pubs | 🔜 à installer |
-| Réseau | VPN | Accès sécurisé à distance (solution à déterminer) | 🔜 à choisir |
+| Réseau | Tailscale (VPN) | Accès sécurisé au réseau maison depuis n'importe où, sans ouvrir de port | ✅ en service |
 | Monitoring | Grafana | Tableaux de bord de supervision | 🔜 à installer |
 
 ## 📍 État actuel
@@ -56,8 +56,10 @@ Tous tournent en conteneurs Docker dans la VM, gérés avec Portainer.
 | Home Assistant 2026.10 | Domotique et dashboard | ✅ installé |
 | Node-RED | Automatisations | ✅ installé, relié à Home Assistant |
 | Pi-hole | DNS local et blocage de pubs | 🔜 à installer |
-| VPN | Accès sécurisé à distance | 🔜 solution à déterminer |
+| Tailscale | VPN : accès distant au réseau maison | ✅ installé sur la VM |
 | Grafana | Monitoring | 🔜 à installer |
+
+L'accès depuis l'extérieur passe par Tailscale : la VM annonce le réseau local, aucun port n'est ouvert sur la box.
 
 Intégrations Home Assistant en place : Tuya, Google Cast, Google Translate text-to-speech, Spotify, Calendrier distant (Google Agenda), Met.no, Android Debug Bridge, HACS, Node-RED Companion.
 
@@ -87,5 +89,5 @@ Un seul brief vocal par jour de cours, 35 min avant le premier cours : date, mé
 - [x] Lampes Tuya dans Home Assistant et dans le dashboard
 - [x] Module des volets (ESPSomfy RTS) dans Home Assistant et dans le dashboard
 - [ ] Pi-hole
-- [ ] VPN (solution à déterminer)
+- [x] VPN Tailscale : accès distant au réseau maison, testé depuis l'extérieur
 - [ ] Grafana
